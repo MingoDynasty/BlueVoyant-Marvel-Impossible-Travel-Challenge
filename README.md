@@ -6,16 +6,27 @@ A small application that talks to the Marvel Comics API and exfiltrates data.
 
 1. Java 17+
 2. Docker
+3. Marvel API key (sign up for free here: https://developer.marvel.com/account)
 
 ## Instructions
 
-1. Build the JARs
+1. Add your Marvel API public and private keys to `backend/src/main/resources/application.yaml`
+
+```yaml
+marvel.api.public.key: your_public_key
+marvel.api.private.key: your_private_key
+```
+
+Alternatively you can also create `backend/src/main/resources/application-default.yaml` and add your keys there,
+to avoid seeing your keys in the Git diff (also less chance of accidentally committing them!).
+
+2. Build the JARs
 
 ```bash
 ./mvnw package
 ```
 
-2. Build the Docker containers and run
+3. Build the Docker containers and run
 
 ```bash
 cd backend
