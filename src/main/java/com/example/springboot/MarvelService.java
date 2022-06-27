@@ -42,6 +42,7 @@ public class MarvelService {
 
         // keep a counter, so we know how much to offset
         int comicsProcessed = 0;
+        Set<Comic> comicSet = new HashSet<>();
         Set<String> characterNames = new HashSet<>();
         while (comicsProcessed < totalComics) {
             Map<GetCharacterComicsParamName, String> optionsMap = new HashMap<>();
@@ -51,11 +52,12 @@ public class MarvelService {
             int limit = Math.min(100, totalComics - comicsProcessed);
             optionsMap.put(GetCharacterComicsParamName.LIMIT, String.valueOf(limit));
 
-            List<Comic> comics = marvelOutboundService.getComicsForCharacterId(character.getId(), optionsMap);
-            logger.info("Found {} comics.", comics.size());
-            comicsProcessed += comics.size();
+            List<Comic> comicList = marvelOutboundService.getComicsForCharacterId(character.getId(), optionsMap);
+            logger.info("Found {} comics.", comicList.size());
+            comicsProcessed += comicList.size();
 
-            for (Comic comic : comics) {
+            comicSet.addAll(comicList);
+            for (Comic comic : comicList) {
                 CharacterList characterList = comic.getCharacters();
                 List<CharacterSummary> characterSummaries = characterList.getItems();
                 for (CharacterSummary characterSummary : characterSummaries) {
@@ -67,6 +69,20 @@ public class MarvelService {
             }
         }
         logger.info("Found {} character names: {}", characterNames.size(), characterNames);
+        logger.info("Found {} comics: {}", comicSet.size(), comicSet);
+
+        // TODO: making a tradeoff here. Now we have X comics, and Y characters. I am assuming that
+        //  the list of comics is shorter than the list of characters, but if we want to be optimal,
+        //  then we should verify and choose the appropriate approach that results in less API calls.
+        Set<Character> characterSet = new HashSet<>();
+
+        for (Comic comic : comicSet) {
+            // TODO: getting 401s because the library's hash function is broken...
+            List<Character> comicCharacters = marvelOutboundService.getCharactersForComicId(comic.getId());
+            characterSet.addAll(comicCharacters);
+        }
+        logger.info("Found {} characters in character set: {}", characterSet.size(), characterSet);
+        characters.addAll(characterSet);
 
         // 5. Persist all data to database
         if (!characters.isEmpty()) {
