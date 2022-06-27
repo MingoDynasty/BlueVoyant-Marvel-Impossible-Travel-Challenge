@@ -4,3 +4,18 @@ services:
     build: .
     ports:
       - "8080:8080"
+    depends_on:
+      - my_database
+  my_database:
+    image: postgres
+    environment:
+      - POSTGRES_DB=marvel-db
+      - POSTGRES_USER=marvel-user
+      - POSTGRES_PASSWORD=marvel-pass
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_volume:/var/lib/postgresql/data
+volumes:
+  database_volume:
+    driver: local
