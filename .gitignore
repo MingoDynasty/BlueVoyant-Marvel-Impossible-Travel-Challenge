@@ -57,3 +57,8 @@ local.properties
 ## OS X
 ##############################
 .DS_Store
+
+##############################
+## local-only files
+##############################
+src/main/resources/application-default.yaml
