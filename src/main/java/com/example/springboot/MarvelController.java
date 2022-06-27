@@ -23,11 +23,7 @@ public class MarvelController {
 
     @GetMapping("/characters")
     public ResponseEntity<Object> getCharacter(@RequestParam String name) {
-        logger.debug("mingtest get start");
-
         List<Character> characters = marvelService.listCharacter(name);
-
-        logger.debug("mingtest get done");
         return new ResponseEntity<>(characters, HttpStatus.OK);
     }
 

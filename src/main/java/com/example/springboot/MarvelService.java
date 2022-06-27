@@ -42,6 +42,7 @@ public class MarvelService {
     }
 
     public List<Character> listCharacter(String characterName) {
+        logger.info("Listing characters with name: {}", characterName);
         Map<ListCharacterParamName, String> optionsMap = new HashMap<>();
         optionsMap.put(ListCharacterParamName.NAME, characterName);
 
