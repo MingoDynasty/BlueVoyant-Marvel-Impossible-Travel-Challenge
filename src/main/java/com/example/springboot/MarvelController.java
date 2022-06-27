@@ -20,10 +20,18 @@ public class MarvelController {
 
     @Autowired
     private MarvelService marvelService;
+    @Autowired
+    private MarvelPersistenceService marvelPersistenceService;
 
     @GetMapping("/characters")
     public ResponseEntity<Object> getCharacter(@RequestParam String name) {
         List<Character> characters = marvelService.listCharacter(name);
+        return new ResponseEntity<>(characters, HttpStatus.OK);
+    }
+
+    @GetMapping("/persistedCharacters")
+    public ResponseEntity<Object> getPersistedCharacters() {
+        List<com.example.springboot.Character> characters = marvelPersistenceService.findAll();
         return new ResponseEntity<>(characters, HttpStatus.OK);
     }
 
