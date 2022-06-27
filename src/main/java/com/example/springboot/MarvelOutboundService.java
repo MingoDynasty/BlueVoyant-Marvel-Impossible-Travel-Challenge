@@ -2,12 +2,17 @@ package com.example.springboot;
 
 import com.arnaudpiroelle.marvel.api.MarvelApi;
 import com.arnaudpiroelle.marvel.api.exceptions.AuthorizationException;
+import com.arnaudpiroelle.marvel.api.exceptions.EntityNotFoundException;
 import com.arnaudpiroelle.marvel.api.exceptions.QueryException;
+import com.arnaudpiroelle.marvel.api.exceptions.RateLimitException;
 import com.arnaudpiroelle.marvel.api.objects.Character;
+import com.arnaudpiroelle.marvel.api.objects.Comic;
 import com.arnaudpiroelle.marvel.api.objects.ref.DataContainer;
 import com.arnaudpiroelle.marvel.api.objects.ref.DataWrapper;
+import com.arnaudpiroelle.marvel.api.params.name.character.GetCharacterComicsParamName;
 import com.arnaudpiroelle.marvel.api.params.name.character.ListCharacterParamName;
 import com.arnaudpiroelle.marvel.api.services.sync.CharactersService;
+import com.arnaudpiroelle.marvel.api.services.sync.ComicsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +28,7 @@ import java.util.Map;
 public class MarvelOutboundService {
     private static final Logger logger = LoggerFactory.getLogger(MarvelOutboundService.class);
     private CharactersService charactersService;
+    private ComicsService comicsService;
     @Value("${marvel.api.public.key}")
     private String MARVEL_API_PUBLIC_KEY;
     @Value("${marvel.api.private.key}")
@@ -33,12 +39,47 @@ public class MarvelOutboundService {
         MarvelApi.configure()
                 .withApiKeys(MARVEL_API_PUBLIC_KEY, MARVEL_API_PRIVATE_KEY)
 
-                // no need to log anything, though maybe we may want to expose this to our Spring config file
-                .withLogLevel(RestAdapter.LogLevel.NONE)
+                // TODO: maybe want to expose this to our Spring config file
+                // limit the logging so it's not so noisy, but some logging is useful
+                // to know when we are spending some of our daily API allowance.
+                .withLogLevel(RestAdapter.LogLevel.BASIC)
                 .init();
 
-        // Synchronous version
+        // Synchronous versions
         charactersService = MarvelApi.getService(CharactersService.class);
+        comicsService = MarvelApi.getService(ComicsService.class);
+    }
+
+    public List<Character> getCharactersForComicId(int comicId) {
+        try {
+            DataWrapper<Character> dataWrapper = comicsService.getComicCharacters(comicId);
+            DataContainer<Character> dataContainer = dataWrapper.getData();
+            return dataContainer.getResults();
+        } catch (AuthorizationException e) {
+            throw new RuntimeException(e);
+        } catch (QueryException e) {
+            throw new RuntimeException(e);
+        } catch (RateLimitException e) {
+            throw new RuntimeException(e);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Comic> getComicsForCharacterId(int characterId, Map<GetCharacterComicsParamName, String> optionsMap) {
+        try {
+            DataWrapper<Comic> dataWrapper = charactersService.getCharacterComics(characterId, optionsMap);
+            DataContainer<Comic> dataContainer = dataWrapper.getData();
+            return dataContainer.getResults();
+        } catch (AuthorizationException e) {
+            throw new RuntimeException(e);
+        } catch (QueryException e) {
+            throw new RuntimeException(e);
+        } catch (RateLimitException e) {
+            throw new RuntimeException(e);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Character> listCharacter(String characterName) {

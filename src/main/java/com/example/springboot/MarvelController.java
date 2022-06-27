@@ -1,6 +1,5 @@
 package com.example.springboot;
 
-import com.arnaudpiroelle.marvel.api.objects.Character;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,13 @@ public class MarvelController {
     @Autowired
     private MarvelPersistenceService marvelPersistenceService;
 
-    @GetMapping("/characters")
+    @GetMapping("/character/investigate")
     public ResponseEntity<Object> getCharacter(@RequestParam String name) {
-        List<Character> characters = marvelService.listCharacter(name);
+        List<com.arnaudpiroelle.marvel.api.objects.Character> characters = marvelService.investigateCharacter(name);
         return new ResponseEntity<>(characters, HttpStatus.OK);
     }
 
-    @GetMapping("/persistedCharacters")
+    @GetMapping("/character/persisted")
     public ResponseEntity<Object> getPersistedCharacters() {
         List<com.example.springboot.Character> characters = marvelPersistenceService.findAll();
         return new ResponseEntity<>(characters, HttpStatus.OK);
