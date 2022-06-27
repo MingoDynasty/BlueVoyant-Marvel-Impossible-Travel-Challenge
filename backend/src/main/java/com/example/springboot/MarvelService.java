@@ -26,16 +26,16 @@ public class MarvelService {
         logger.info("Listing characters with name: {}", characterName);
 
         // 1. Get the main character we are searching for
-        List<Character> characters = marvelOutboundService.listCharacter(characterName);
-        if (characters.size() > 1) {
+        List<Character> charactersToPersist = marvelOutboundService.listCharacter(characterName);
+        if (charactersToPersist.size() > 1) {
             // TODO: need better error handling
             logger.error("How do we have more than one Spectrums?!");
             return new ArrayList<>();
         }
 
         // 2. Get all comics containing this character
-        Character character = characters.get(0);
-        int totalComics = character.getComics().getAvailable();
+        Character mainCharacter = charactersToPersist.get(0);
+        int totalComics = mainCharacter.getComics().getAvailable();
         logger.info("Found {} total comics.", totalComics);
 
         // 3. Get list of characters for each of these comics
@@ -52,7 +52,7 @@ public class MarvelService {
             int limit = Math.min(100, totalComics - comicsProcessed);
             optionsMap.put(GetCharacterComicsParamName.LIMIT, String.valueOf(limit));
 
-            List<Comic> comicList = marvelOutboundService.getComicsForCharacterId(character.getId(), optionsMap);
+            List<Comic> comicList = marvelOutboundService.getComicsForCharacterId(mainCharacter.getId(), optionsMap);
             logger.info("Found {} comics.", comicList.size());
             comicsProcessed += comicList.size();
 
@@ -74,25 +74,33 @@ public class MarvelService {
         // TODO: making a tradeoff here. Now we have X comics, and Y characters. I am assuming that
         //  the list of comics is shorter than the list of characters, but if we want to be optimal,
         //  then we should verify and choose the appropriate approach that results in less API calls.
-        Set<Character> characterSet = new HashSet<>();
+        Set<Integer> characterIds = new HashSet<>();
+        characterIds.add(mainCharacter.getId()); // add our main character's id
 
+        // 4. Iterate through each of these comics, get the list of characters,
+        //  and add any new characters to our list of characters to persist.
         for (Comic comic : comicSet) {
-            // TODO: getting 401s because the library's hash function is broken...
+            logger.debug("Getting characters for comicId: {}", comic.getId());
             List<Character> comicCharacters = marvelOutboundService.getCharactersForComicId(comic.getId());
-            characterSet.addAll(comicCharacters);
+            logger.debug("Found {} characters for comicId: {}", comicCharacters.size(), comic.getId());
+            for (Character comicCharacter : comicCharacters) {
+                if (!characterIds.contains(comicCharacter.getId())) {
+                    characterIds.add(comicCharacter.getId());
+                    charactersToPersist.add(comicCharacter);
+                }
+            }
         }
-        logger.info("Found {} characters in character set: {}", characterSet.size(), characterSet);
-        characters.addAll(characterSet);
+        logger.info("Found {} characters in character set: {}", characterIds.size(), characterIds);
 
-        // 5. Persist all data to database
-        if (!characters.isEmpty()) {
+        // 5. Persist the characters to database
+        if (!charactersToPersist.isEmpty()) {
             // TODO: in the future, probably want to build some sort of mapping instead so don't need to delete
             // delete existing characters
             marvelPersistenceService.deleteAll();
 
-            logger.info("Persisting {} characters to database.", characters.size());
-            marvelPersistenceService.insertMarvelApiCharacters(characters);
+            logger.info("Persisting {} characters to database.", charactersToPersist.size());
+            marvelPersistenceService.insertMarvelApiCharacters(charactersToPersist);
         }
-        return characters;
+        return charactersToPersist;
     }
 }
