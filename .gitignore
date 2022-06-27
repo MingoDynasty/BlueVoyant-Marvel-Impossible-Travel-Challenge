@@ -61,4 +61,4 @@ local.properties
 ##############################
 ## local-only files
 ##############################
-src/main/resources/application-default.yaml
+backend/src/main/resources/application-default.yaml
