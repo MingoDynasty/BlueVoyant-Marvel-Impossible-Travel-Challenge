@@ -38,6 +38,14 @@
             <scope>test</scope>
         </dependency>
         <!-- end::tests[] -->
+
+        <!-- https://mvnrepository.com/artifact/com.arnaudpiroelle/marvel-api -->
+        <dependency>
+            <groupId>com.arnaudpiroelle</groupId>
+            <artifactId>marvel-api</artifactId>
+            <version>0.5.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
