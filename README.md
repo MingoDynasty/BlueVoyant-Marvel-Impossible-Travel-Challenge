@@ -46,3 +46,9 @@ GET localhost:8080/api/v1/character/investigate?name=Spectrum
 ```
 GET localhost:8080/api/v1/character/persisted
 ```
+
+2. Optional endpoint: manually clear database of any persisted characters.
+
+```
+DELETE localhost:8080/api/v1/character/persisted
+```
