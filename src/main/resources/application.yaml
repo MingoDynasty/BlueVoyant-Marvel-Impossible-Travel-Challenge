@@ -1,0 +1,4 @@
+# TODO: maybe use Spring Profiles so have separate configs for local vs Production
+logging:
+  level:
+    com.example.springboot: DEBUG
