@@ -1,6 +1,6 @@
 version: "3.9"  # optional since v1.27.0
 services:
-  backend:
+  my-deployment:
     build: .
     ports:
       - "8080:8080"
