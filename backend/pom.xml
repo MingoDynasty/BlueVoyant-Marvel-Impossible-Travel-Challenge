@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.arnaudpiroelle</groupId>
             <artifactId>marvel-api</artifactId>
-            <version>0.5.0</version>
+            <version>0.5.1-SNAPSHOT</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
