@@ -9,13 +9,15 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>spring-boot-complete</artifactId>
+    <artifactId>marvel-impossible-travel-challenge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-boot-complete</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
