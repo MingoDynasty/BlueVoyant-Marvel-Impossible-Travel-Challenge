@@ -12,6 +12,7 @@
 
     <modules>
         <module>backend</module>
+        <module>marvel-api</module>
     </modules>
 
 </project>
