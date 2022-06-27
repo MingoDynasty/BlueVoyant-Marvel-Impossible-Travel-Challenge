@@ -31,6 +31,6 @@ public class Character {
     @Column(name = "thumbnail_path")
     private String thumbnailPath;
 
-    @Column(name = "last_retrieved")
+    @Column(name = "last_retrieved", insertable = false)
     private OffsetDateTime lastRetrieved;
 }
