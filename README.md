@@ -23,7 +23,7 @@ to avoid seeing your keys in the Git diff (also less chance of accidentally comm
 2. Build the JARs
 
 ```bash
-./mvnw package
+./mvnw clean package
 ```
 
 3. Build the Docker containers and run
