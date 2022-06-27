@@ -4,7 +4,7 @@ logging:
     com.example.springboot: DEBUG
 
 
-spring.datasource.url: jdbc:postgresql://localhost:5432/marvel-db
+spring.datasource.url: jdbc:postgresql://host.docker.internal:5432/marvel-db
 spring.datasource.username: marvel-user
 spring.datasource.password: marvel-pass
 
