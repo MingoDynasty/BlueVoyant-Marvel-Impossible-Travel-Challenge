@@ -22,6 +22,10 @@ public class MarvelService {
         List<Character> characters = marvelOutboundService.listCharacter(characterName);
 
         if (!characters.isEmpty()) {
+            // TODO: in the future, probably want to build some sort of mapping instead so don't need to delete
+            // delete existing characters
+            marvelPersistenceService.deleteAll();
+
             logger.info("Persisting {} characters to database.", characters.size());
             marvelPersistenceService.insertMarvelApiCharacters(characters);
         }

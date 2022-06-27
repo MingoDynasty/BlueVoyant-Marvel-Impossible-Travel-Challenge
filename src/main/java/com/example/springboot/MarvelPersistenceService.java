@@ -24,7 +24,11 @@ public class MarvelPersistenceService {
             convertedCharacter.setThumbnailPath(character.getThumbnail().getPath() + "." + character.getThumbnail().getExtension());
             convertedList.add(convertedCharacter);
         }
-        return this.marvelRepository.saveAll(convertedList);
+        return insertCharacters(convertedList);
+    }
+
+    public void deleteAll() {
+        this.marvelRepository.deleteAll();
     }
 
     public List<Character> findAll() {
