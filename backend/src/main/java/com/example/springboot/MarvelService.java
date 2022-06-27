@@ -21,8 +21,7 @@ public class MarvelService {
     @Autowired
     private MarvelPersistenceService marvelPersistenceService;
 
-    //    public List<Character> listCharacter(String characterName) {
-    public List<Character> investigateCharacter(String characterName) {
+    public List<com.example.springboot.Character> investigateCharacter(String characterName) {
         logger.info("Listing characters with name: {}", characterName);
 
         // 1. Get the main character we are searching for
@@ -92,15 +91,16 @@ public class MarvelService {
         }
         logger.info("Found {} characters in character set: {}", characterIds.size(), characterIds);
 
-        // 5. Persist the characters to database
-        if (!charactersToPersist.isEmpty()) {
-            // TODO: in the future, probably want to build some sort of mapping instead so don't need to delete
-            // delete existing characters
-            marvelPersistenceService.deleteAll();
-
-            logger.info("Persisting {} characters to database.", charactersToPersist.size());
-            marvelPersistenceService.insertMarvelApiCharacters(charactersToPersist);
+        if (charactersToPersist.isEmpty()) {
+            return new ArrayList<>();
         }
-        return charactersToPersist;
+
+        // 5. Persist the characters to database
+        // TODO: in the future, probably want to build some sort of mapping instead so don't need to delete
+        // delete existing characters
+        marvelPersistenceService.deleteAll();
+
+        logger.info("Persisting {} characters to database.", charactersToPersist.size());
+        return marvelPersistenceService.insertMarvelApiCharacters(charactersToPersist);
     }
 }

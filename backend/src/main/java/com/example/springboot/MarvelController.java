@@ -24,13 +24,13 @@ public class MarvelController {
 
     @GetMapping("/character/investigate")
     public ResponseEntity<Object> getCharacter(@RequestParam String name) {
-        List<com.arnaudpiroelle.marvel.api.objects.Character> characters = marvelService.investigateCharacter(name);
+        List<Character> characters = marvelService.investigateCharacter(name);
         return new ResponseEntity<>(characters, HttpStatus.OK);
     }
 
     @GetMapping("/character/persisted")
     public ResponseEntity<Object> getPersistedCharacters() {
-        List<com.example.springboot.Character> characters = marvelPersistenceService.findAll();
+        List<Character> characters = marvelPersistenceService.findAll();
         return new ResponseEntity<>(characters, HttpStatus.OK);
     }
 
